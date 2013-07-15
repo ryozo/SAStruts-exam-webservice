@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE components PUBLIC "-//SEASAR//DTD S2Container 2.4//EN" 
+    "http://www.seasar.org/dtd/components24.dtd">
+<components>
+    <include path="default-customizer.dicon"/>
+	
+    <component name="actionCustomizer"
+        class="org.seasar.framework.container.customizer.CustomizerChain">
+        <initMethod name="addAspectCustomizer">
+            <arg>"aop.traceInterceptor"</arg>
+        </initMethod>
+        <initMethod name="addAspectCustomizer">
+            <arg>"actionMessagesThrowsInterceptor"</arg>
+        </initMethod>
+
+        <!-- Webサービス関連初期処理を行うインターセプタ -->
+        <initMethod name="addCustomizer">
+          <arg>
+            <component class="org.seasar.framework.container.customizer.AspectCustomizer">
+              <property name="interceptorName">"webServiceSetupInterceptor"</property>
+            <property name="useLookupAdapter">true</property>
+              <!-- Webサービス関連のリクエストのみを対象とする -->
+              <initMethod name="addClassPattern">
+                <arg>"jp.sastruts.exam.action.webservice"</arg>
+                <arg>".*"</arg>
+              </initMethod>
+            </component>
+          </arg>
+        </initMethod>
+
+        <!-- アプリケーションログ取得用のインターセプタ -->
+        <initMethod name="addCustomizer">
+          <arg>
+            <component class="org.seasar.framework.container.customizer.AspectCustomizer">
+              <property name="interceptorName">"applicationLogInterceptor"</property>
+              <!-- Webサービス関連のリクエストは対象外 -->
+              <initMethod name="addIgnoreClassPattern">
+                <arg>"jp.sastruts.exam.action.webservice"</arg>
+                <arg>".*"</arg>
+              </initMethod>
+            </component>
+          </arg>
+        </initMethod>
+
+        <!-- Webサービス関連のログ取得用インターセプタ -->
+        <initMethod name="addCustomizer">
+          <arg>
+            <component class="org.seasar.framework.container.customizer.AspectCustomizer">
+              <property name="interceptorName">"webServiceLogInterceptor"</property>
+              <property name="useLookupAdapter">true</property>
+              <!-- Webサービス関連のリクエストのみを対象とする -->
+              <initMethod name="addClassPattern">
+                <arg>"jp.sastruts.exam.action.webservice"</arg>
+                <arg>".*"</arg>
+              </initMethod>
+            </component>
+          </arg>
+        </initMethod>
+        
+        <!-- XMLのマーシャル・アンマーシャルを行うインターセプタ-->
+        <initMethod name="addCustomizer">
+          <arg>
+            <component class="org.seasar.framework.container.customizer.AspectCustomizer">
+              <property name="interceptorName">"xmlAnalysysInterceptor"</property>
+              <property name="useLookupAdapter">true</property>
+              <!-- Webサービス関連のリクエストのみを対象とする -->
+              <initMethod name="addClassPattern">
+                <arg>"jp.sastruts.exam.action.webservice"</arg>
+                <arg>".*"</arg>
+              </initMethod>
+            </component>
+          </arg>
+        </initMethod>
+        
+        <initMethod name="addCustomizer">
+            <arg>
+                <component
+                    class="org.seasar.framework.container.customizer.TxAttributeCustomizer"/>
+            </arg>
+        </initMethod>
+        <initMethod name="addCustomizer">
+            <arg>
+                <component
+                    class="org.seasar.struts.customizer.ActionCustomizer"/>
+            </arg>
+        </initMethod>
+    </component>
+    
+    <component name="formCustomizer"
+        class="org.seasar.framework.container.customizer.CustomizerChain">
+    </component>
+	
+    <component name="serviceCustomizer"
+        class="org.seasar.framework.container.customizer.CustomizerChain">
+        <initMethod name="addAspectCustomizer">
+            <arg>"aop.traceInterceptor"</arg>
+        </initMethod>
+        <initMethod name="addCustomizer">
+            <arg>
+                <component
+                    class="org.seasar.framework.container.customizer.TxAttributeCustomizer"/>
+            </arg>
+        </initMethod>
+    </component>
+</components>
